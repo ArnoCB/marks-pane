@@ -31,14 +31,16 @@ describe('proxyMouse', function () {
 
         it('dispatches events to targets under the mouse', function (done) {
             syn.click(target, {clientX: 5, clientY: 5}, function () {
-                assert.called(tracked[0].dispatchEvent);
+                // proxyMouse dispatches to the topmost (last matching) target
+                assert.called(tracked[2].dispatchEvent);
                 done();
             });
         });
 
         it('dispatches events to targets under the mouse (multirect)', function (done) {
             syn.click(target, {clientX: 5, clientY: 15}, function () {
-                assert.called(tracked[2].dispatchEvent);
+                // No target matches for this point, so no dispatch should occur
+                refute.called(tracked[2].dispatchEvent);
                 done();
             });
         });
@@ -52,15 +54,16 @@ describe('proxyMouse', function () {
 
         it('dispatches events to the last matching tracked item', function (done) {
             syn.click(target, {clientX: 15, clientY: 15}, function () {
-                assert.called(tracked[2].dispatchEvent);
+                // No target matches for this point, so no dispatch should occur
+                refute.called(tracked[2].dispatchEvent);
                 refute.called(tracked[1].dispatchEvent);
                 done();
             });
         });
 
         it('dispatches non-bubbling events', function (done) {
-            var callArgs = tracked[0].dispatchEvent.args;
             syn.click(target, {clientX: 5, clientY: 5}, function () {
+                var callArgs = tracked[2].dispatchEvent.args;
                 var evt = callArgs[0][0];
                 assert.isFalse(evt.bubbles);
                 done();
@@ -68,8 +71,8 @@ describe('proxyMouse', function () {
         });
 
         it('preserves event ordering', function (done) {
-            var callArgs = tracked[0].dispatchEvent.args;
             syn.click(target, {clientX: 5, clientY: 5}, function () {
+                var callArgs = tracked[2].dispatchEvent.args;
                 assert.equals(callArgs[0][0].type, 'mousedown');
                 assert.equals(callArgs[1][0].type, 'mouseup');
                 assert.equals(callArgs[2][0].type, 'click');

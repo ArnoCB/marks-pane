@@ -42,6 +42,9 @@
     "prepublish": "make clean default",
     "test": "./node_modules/karma/bin/karma start --single-run",
     "watch": "mkdir -p pkg && watchify -t babelify -s marks src/marks.js -o pkg/marks.js",
-    "build": "./node_modules/.bin/babel src --out-dir lib"
+    "build": "npx tsc && ./node_modules/.bin/babel src --out-dir lib"
+  },
+  "dependencies": {
+    "typescript": "^5.8.3"
   }
 }

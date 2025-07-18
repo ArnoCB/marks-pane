@@ -1,8 +1,5 @@
 import { expect } from "referee";
-import sinon from "sinon";
-import svg from "../src/svg";
-import events from "../src/events";
-import { Pane, Mark, Highlight, Underline } from "../src/marks";
+import { Pane, Mark, Highlight, Underline } from "../lib/marks";
 
 describe("Pane", function() {
   let target, container, pane;
@@ -13,7 +10,7 @@ describe("Pane", function() {
     container.appendChild(target);
     pane = new Pane(target, container);
   });
-  
+
   afterEach(function() {
     document.body.removeChild(container);
   });

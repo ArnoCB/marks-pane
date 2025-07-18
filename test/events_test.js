@@ -1,4 +1,4 @@
-import events from '../src/events';
+import events from '../lib/events';
 
 describe('proxyMouse', function () {
     var target;

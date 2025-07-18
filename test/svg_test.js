@@ -1,4 +1,4 @@
-import svg from '../src/svg';
+import svg from '../lib/svg';
 
 describe('svg', function () {
     describe('createElement', function () {

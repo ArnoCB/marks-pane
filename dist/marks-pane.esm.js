@@ -10,7 +10,7 @@ var events = {
 };
 function proxyMouse(target, tracked) {
     let eventTarget = target;
-    if (target.nodeName === "iframe" || target.nodeName === "IFRAME") {
+    if (target.nodeName === 'iframe' || target.nodeName === 'IFRAME') {
         try {
             eventTarget = target.contentDocument || target;
         }
@@ -28,7 +28,7 @@ function proxyMouse(target, tracked) {
         for (let i = tracked.length - 1; i >= 0; i--) {
             const t = tracked[i];
             let x, y;
-            if ("touches" in e && e.touches.length) {
+            if ('touches' in e && e.touches.length) {
                 x = e.touches[0].clientX;
                 y = e.touches[0].clientY;
             }
@@ -42,16 +42,16 @@ function proxyMouse(target, tracked) {
             break;
         }
     }
-    for (const ev of ["mouseup", "mousedown", "click"]) {
+    for (const ev of ['mouseup', 'mousedown', 'click']) {
         eventTarget.addEventListener(ev, (e) => dispatch(e), false);
     }
-    eventTarget.addEventListener("touchstart", (e) => dispatch(e), false);
+    eventTarget.addEventListener('touchstart', (e) => dispatch(e), false);
 }
 /**
  * Clone a mouse event object.
  */
 function clone(e) {
-    if ("touches" in e) {
+    if ('touches' in e) {
         // TouchEvent: cloning is not supported, just return the original event
         return e;
     }
@@ -88,11 +88,11 @@ function contains(item, target, x, y) {
 class Pane {
     constructor(target, container = document.body) {
         this.target = target;
-        this.element = svg.createElement("svg");
+        this.element = svg.createElement('svg');
         this.marks = [];
         // Match the coordinates of the target element
-        this.element.style.position = "absolute";
-        this.element.setAttribute("pointer-events", "none");
+        this.element.style.position = 'absolute';
+        this.element.setAttribute('pointer-events', 'none');
         // Set up mouse event proxying between the target element and the marks
         events.proxyMouse(this.target, this.marks);
         this.container = container;
@@ -100,7 +100,7 @@ class Pane {
         this.render();
     }
     addMark(mark) {
-        const g = svg.createElement("g");
+        const g = svg.createElement('g');
         this.element.appendChild(g);
         mark.bind(g, this.container);
         this.marks.push(mark);
@@ -221,11 +221,11 @@ class Highlight extends Mark {
         const container = this.container.getBoundingClientRect();
         for (let i = 0, len = filtered.length; i < len; i++) {
             const r = filtered[i];
-            const el = svg.createElement("rect");
-            el.setAttribute("x", String(r.left - offset.left + container.left));
-            el.setAttribute("y", String(r.top - offset.top + container.top));
-            el.setAttribute("height", String(r.height));
-            el.setAttribute("width", String(r.width));
+            const el = svg.createElement('rect');
+            el.setAttribute('x', String(r.left - offset.left + container.left));
+            el.setAttribute('y', String(r.top - offset.top + container.top));
+            el.setAttribute('height', String(r.height));
+            el.setAttribute('width', String(r.width));
             docFrag.appendChild(el);
         }
         this.element.appendChild(docFrag);
@@ -247,20 +247,20 @@ class Underline extends Highlight {
         const container = this.container.getBoundingClientRect();
         for (let i = 0, len = filtered.length; i < len; i++) {
             const r = filtered[i];
-            const rect = svg.createElement("rect");
-            rect.setAttribute("x", String(r.left - offset.left + container.left));
-            rect.setAttribute("y", String(r.top - offset.top + container.top));
-            rect.setAttribute("height", String(r.height));
-            rect.setAttribute("width", String(r.width));
-            rect.setAttribute("fill", "none");
-            const line = svg.createElement("line");
-            line.setAttribute("x1", String(r.left - offset.left + container.left));
-            line.setAttribute("x2", String(r.left - offset.left + container.left + r.width));
-            line.setAttribute("y1", String(r.top - offset.top + container.top + r.height - 1));
-            line.setAttribute("y2", String(r.top - offset.top + container.top + r.height - 1));
-            line.setAttribute("stroke-width", "1");
-            line.setAttribute("stroke", "black"); //TODO: match text color?
-            line.setAttribute("stroke-linecap", "square");
+            const rect = svg.createElement('rect');
+            rect.setAttribute('x', String(r.left - offset.left + container.left));
+            rect.setAttribute('y', String(r.top - offset.top + container.top));
+            rect.setAttribute('height', String(r.height));
+            rect.setAttribute('width', String(r.width));
+            rect.setAttribute('fill', 'none');
+            const line = svg.createElement('line');
+            line.setAttribute('x1', String(r.left - offset.left + container.left));
+            line.setAttribute('x2', String(r.left - offset.left + container.left + r.width));
+            line.setAttribute('y1', String(r.top - offset.top + container.top + r.height - 1));
+            line.setAttribute('y2', String(r.top - offset.top + container.top + r.height - 1));
+            line.setAttribute('stroke-width', '1');
+            line.setAttribute('stroke', 'black');
+            line.setAttribute('stroke-linecap', 'square');
             docFrag.appendChild(rect);
             docFrag.appendChild(line);
         }
@@ -278,10 +278,10 @@ function coords(el, container) {
     };
 }
 function setCoords(el, coords) {
-    el.style.setProperty("top", `${coords.top}px`, "important");
-    el.style.setProperty("left", `${coords.left}px`, "important");
-    el.style.setProperty("height", `${coords.height}px`, "important");
-    el.style.setProperty("width", `${coords.width}px`, "important");
+    el.style.setProperty('top', `${coords.top}px`, 'important');
+    el.style.setProperty('left', `${coords.left}px`, 'important');
+    el.style.setProperty('height', `${coords.height}px`, 'important');
+    el.style.setProperty('width', `${coords.width}px`, 'important');
 }
 
 export { Highlight, Mark, Pane, Underline };

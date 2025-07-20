@@ -22,7 +22,7 @@ export interface MarkLike {
 export function proxyMouse(target: Element, tracked: MarkLike[]) {
   let eventTarget: Node | Document = target;
 
-  if (target.nodeName === "iframe" || target.nodeName === "IFRAME") {
+  if (target.nodeName === 'iframe' || target.nodeName === 'IFRAME') {
     try {
       eventTarget = (target as HTMLIFrameElement).contentDocument || target;
     } catch {
@@ -41,7 +41,7 @@ export function proxyMouse(target: Element, tracked: MarkLike[]) {
       const t = tracked[i];
       let x: number, y: number;
 
-      if ("touches" in e && (e as TouchEvent).touches.length) {
+      if ('touches' in e && (e as TouchEvent).touches.length) {
         x = (e as TouchEvent).touches[0].clientX;
         y = (e as TouchEvent).touches[0].clientY;
       } else {
@@ -55,12 +55,12 @@ export function proxyMouse(target: Element, tracked: MarkLike[]) {
     }
   }
 
-  for (const ev of ["mouseup", "mousedown", "click"]) {
+  for (const ev of ['mouseup', 'mousedown', 'click']) {
     eventTarget.addEventListener(ev, (e) => dispatch(e as MouseEvent), false);
   }
 
   eventTarget.addEventListener(
-    "touchstart",
+    'touchstart',
     (e) => dispatch(e as TouchEvent),
     false
   );
@@ -71,7 +71,7 @@ export function proxyMouse(target: Element, tracked: MarkLike[]) {
  * Clone a mouse event object.
  */
 export function clone(e: MouseEvent | TouchEvent): MouseEvent | TouchEvent {
-  if ("touches" in e) {
+  if ('touches' in e) {
     // TouchEvent: cloning is not supported, just return the original event
     return e;
   }

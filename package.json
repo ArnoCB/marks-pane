@@ -14,7 +14,7 @@
   "license": "MIT",
   "main": "dist/marks-pane.umd.js",
   "module": "dist/marks-pane.esm.js",
-  "types": "lib/marks.d.ts",
+  "types": "dist/types/marks.d.ts",
   "devDependencies": {
     "@rollup/plugin-commonjs": "^28.0.6",
     "@rollup/plugin-node-resolve": "^16.0.1",

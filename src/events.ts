@@ -25,7 +25,7 @@ export function proxyMouse(target: Element, tracked: MarkLike[]) {
   if (target.nodeName === "iframe" || target.nodeName === "IFRAME") {
     try {
       eventTarget = (target as HTMLIFrameElement).contentDocument || target;
-    } catch (err) {
+    } catch {
       eventTarget = target;
     }
   }
@@ -37,8 +37,8 @@ export function proxyMouse(target: Element, tracked: MarkLike[]) {
     // This is the least surprising behaviour as it simulates the way the
     // browser would work if items added later were drawn "on top of"
     // earlier ones.
-    for (var i = tracked.length - 1; i >= 0; i--) {
-      var t = tracked[i];
+    for (let i = tracked.length - 1; i >= 0; i--) {
+      const t = tracked[i];
       let x: number, y: number;
 
       if ("touches" in e && (e as TouchEvent).touches.length) {
@@ -89,25 +89,25 @@ function contains(
   x: number,
   y: number
 ): boolean {
-  var offset = target.getBoundingClientRect();
+  const offset = target.getBoundingClientRect();
 
   function rectContains(r: DOMRect, x: number, y: number): boolean {
-    var top = r.top - offset.top;
-    var left = r.left - offset.left;
-    var bottom = top + r.height;
-    var right = left + r.width;
+    const top = r.top - offset.top;
+    const left = r.left - offset.left;
+    const bottom = top + r.height;
+    const right = left + r.width;
     return top <= y && left <= x && bottom > y && right > x;
   }
 
   // Check overall bounding box first
-  var rect = item.getBoundingClientRect();
+  const rect = item.getBoundingClientRect();
   if (!rectContains(rect, x, y)) {
     return false;
   }
 
   // Then continue to check each child rect
-  var rects = item.getClientRects();
-  for (var i = 0, len = rects.length; i < len; i++) {
+  const rects = item.getClientRects();
+  for (let i = 0, len = rects.length; i < len; i++) {
     if (rectContains(rects[i], x, y)) {
       return true;
     }

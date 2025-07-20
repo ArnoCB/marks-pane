@@ -14,7 +14,6 @@ export class Pane {
 
     // Match the coordinates of the target element
     this.element.style.position = "absolute";
-    // Disable pointer events
     this.element.setAttribute("pointer-events", "none");
 
     // Set up mouse event proxying between the target element and the marks
@@ -27,7 +26,7 @@ export class Pane {
   }
 
   public addMark(mark: Mark) {
-    var g = svg.createElement("g");
+    const g = svg.createElement("g");
     this.element.appendChild(g);
     mark.bind(g, this.container);
 
@@ -38,13 +37,13 @@ export class Pane {
   }
 
   public removeMark(mark: Mark) {
-    var idx = this.marks.indexOf(mark);
-    
+    const idx = this.marks.indexOf(mark);
+
     if (idx === -1) {
       return;
     }
     
-    var el = mark.unbind();
+    const el = mark.unbind();
     
     if (el) {
       this.element.removeChild(el);
@@ -55,7 +54,7 @@ export class Pane {
 
   public render() {
     setCoords(this.element, coords(this.target, this.container));
-    for (var m of this.marks) {
+    for (let m of this.marks) {
       m.render();
     }
   }
@@ -77,7 +76,7 @@ export class Mark {
   }
 
   unbind() {
-    var el = this.element;
+    const el = this.element;
     this.element = null;
     return el;
   }
@@ -99,8 +98,8 @@ export class Mark {
   }
 
   getClientRects() {
-    var rects = [];
-    var el = this.element?.firstChild;
+    const rects: DOMRect[] = [];
+    let el = this.element?.firstChild;
     while (el) {
       if (el instanceof Element) {
         rects.push(el.getBoundingClientRect());
@@ -125,43 +124,49 @@ export class Mark {
 
 export class Highlight extends Mark {
   private className: string;
-  private data: any;
-  private attributes: any;
+  private data: Record<string, string>;
+  private attributes: Record<string, string>;
 
   constructor(
     range: Range | null,
     className: string,
-    data: any,
-    attributes: any
+    data: Record<string, string> = {},
+    attributes: Record<string, string> = {}
   ) {
     super();
     this.range = range;
     this.className = className;
-    this.data = data || {};
-    this.attributes = attributes || {};
+    this.data = data;
+    this.attributes = attributes;
   }
 
   bind(element: Element, container: HTMLElement) {
     super.bind(element, container);
 
-    for (var attr in this.data) {
-      if (this.data.hasOwnProperty(attr)) {
+    for (let attr in this.data) {
+      if (Object.prototype.hasOwnProperty.call(this.data, attr)) {
         if (this.element instanceof HTMLElement) {
           this.element.dataset[attr] = this.data[attr];
         }
       }
     }
 
-    for (var attr in this.attributes) {
-      if (this.attributes.hasOwnProperty(attr)) {
-        if (this.element instanceof HTMLElement || this.element instanceof SVGElement) {
+    for (let attr in this.attributes) {
+      if (Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
+        if (
+          this.element instanceof HTMLElement ||
+          this.element instanceof SVGElement
+        ) {
           this.element.setAttribute(attr, this.attributes[attr]);
         }
       }
     }
 
     if (this.className) {
-      if (this.element instanceof HTMLElement || this.element instanceof SVGElement) {
+      if (
+        this.element instanceof HTMLElement ||
+        this.element instanceof SVGElement
+      ) {
         this.element.classList.add(this.className);
       }
     }
@@ -169,19 +174,19 @@ export class Highlight extends Mark {
 
   render() {
     if (!this.element || !this.container) return;
-    
+
     while (this.element.firstChild) {
       this.element.removeChild(this.element.firstChild);
     }
 
-    var docFrag = this.element.ownerDocument.createDocumentFragment();
-    var filtered = this.filteredRanges();
-    var offset = this.element.getBoundingClientRect();
-    var container = this.container.getBoundingClientRect();
+    const docFrag = this.element.ownerDocument.createDocumentFragment();
+    const filtered = this.filteredRanges();
+    const offset = this.element.getBoundingClientRect();
+    const container = this.container.getBoundingClientRect();
 
-    for (var i = 0, len = filtered.length; i < len; i++) {
-      var r = filtered[i];
-      var el = svg.createElement("rect");
+    for (let i = 0, len = filtered.length; i < len; i++) {
+      const r = filtered[i];
+      const el = svg.createElement("rect");
       el.setAttribute("x", String(r.left - offset.left + container.left));
       el.setAttribute("y", String(r.top - offset.top + container.top));
       el.setAttribute("height", String(r.height));
@@ -197,8 +202,8 @@ export class Underline extends Highlight {
   constructor(
     range: Range | null,
     className: string,
-    data: any,
-    attributes: any
+    data: Record<string, string> = {},
+    attributes: Record<string, string> = {}
   ) {
     super(range, className, data, attributes);
   }
@@ -209,22 +214,22 @@ export class Underline extends Highlight {
       this.element.removeChild(this.element.firstChild);
     }
 
-    var docFrag = this.element.ownerDocument.createDocumentFragment();
-    var filtered = this.filteredRanges();
-    var offset = this.element.getBoundingClientRect();
-    var container = this.container.getBoundingClientRect();
+    const docFrag = this.element.ownerDocument.createDocumentFragment();
+    const filtered = this.filteredRanges();
+    const offset = this.element.getBoundingClientRect();
+    const container = this.container.getBoundingClientRect();
 
-    for (var i = 0, len = filtered.length; i < len; i++) {
-      var r = filtered[i];
+    for (let i = 0, len = filtered.length; i < len; i++) {
+      const r = filtered[i];
 
-      var rect = svg.createElement("rect");
+      const rect = svg.createElement("rect");
       rect.setAttribute("x", String(r.left - offset.left + container.left));
       rect.setAttribute("y", String(r.top - offset.top + container.top));
       rect.setAttribute("height", String(r.height));
       rect.setAttribute("width", String(r.width));
       rect.setAttribute("fill", "none");
 
-      var line = svg.createElement("line");
+      const line = svg.createElement("line");
       line.setAttribute("x1", String(r.left - offset.left + container.left));
       line.setAttribute(
         "x2",
@@ -253,8 +258,8 @@ export class Underline extends Highlight {
 
 
 function coords(el: Element, container: HTMLElement): { top: number; left: number; height: number; width: number } {
-    var offset = container.getBoundingClientRect();
-    var rect = el.getBoundingClientRect();
+    const offset = container.getBoundingClientRect();
+    const rect = el.getBoundingClientRect();
 
     return {
         top: rect.top - offset.top,
@@ -275,11 +280,3 @@ function setCoords(
   el.style.setProperty("width", `${coords.width}px`, "important");
 }
 
-function contains(rect1: DOMRect, rect2: DOMRect): boolean {
-  return (
-    (rect2.right <= rect1.right) &&
-    (rect2.left >= rect1.left) &&
-    (rect2.top >= rect1.top) &&
-    (rect2.bottom <= rect1.bottom)
-  );
-}

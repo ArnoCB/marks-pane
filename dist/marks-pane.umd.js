@@ -20,7 +20,7 @@
             try {
                 eventTarget = target.contentDocument || target;
             }
-            catch (err) {
+            catch (_a) {
                 eventTarget = target;
             }
         }
@@ -31,8 +31,8 @@
             // This is the least surprising behaviour as it simulates the way the
             // browser would work if items added later were drawn "on top of"
             // earlier ones.
-            for (var i = tracked.length - 1; i >= 0; i--) {
-                var t = tracked[i];
+            for (let i = tracked.length - 1; i >= 0; i--) {
+                const t = tracked[i];
                 let x, y;
                 if ("touches" in e && e.touches.length) {
                     x = e.touches[0].clientX;
@@ -68,22 +68,22 @@
      * Check if the item contains the point denoted by the passed coordinates
      */
     function contains(item, target, x, y) {
-        var offset = target.getBoundingClientRect();
+        const offset = target.getBoundingClientRect();
         function rectContains(r, x, y) {
-            var top = r.top - offset.top;
-            var left = r.left - offset.left;
-            var bottom = top + r.height;
-            var right = left + r.width;
+            const top = r.top - offset.top;
+            const left = r.left - offset.left;
+            const bottom = top + r.height;
+            const right = left + r.width;
             return top <= y && left <= x && bottom > y && right > x;
         }
         // Check overall bounding box first
-        var rect = item.getBoundingClientRect();
+        const rect = item.getBoundingClientRect();
         if (!rectContains(rect, x, y)) {
             return false;
         }
         // Then continue to check each child rect
-        var rects = item.getClientRects();
-        for (var i = 0, len = rects.length; i < len; i++) {
+        const rects = item.getClientRects();
+        for (let i = 0, len = rects.length; i < len; i++) {
             if (rectContains(rects[i], x, y)) {
                 return true;
             }
@@ -98,7 +98,6 @@
             this.marks = [];
             // Match the coordinates of the target element
             this.element.style.position = "absolute";
-            // Disable pointer events
             this.element.setAttribute("pointer-events", "none");
             // Set up mouse event proxying between the target element and the marks
             events.proxyMouse(this.target, this.marks);
@@ -107,7 +106,7 @@
             this.render();
         }
         addMark(mark) {
-            var g = svg.createElement("g");
+            const g = svg.createElement("g");
             this.element.appendChild(g);
             mark.bind(g, this.container);
             this.marks.push(mark);
@@ -115,11 +114,11 @@
             return mark;
         }
         removeMark(mark) {
-            var idx = this.marks.indexOf(mark);
+            const idx = this.marks.indexOf(mark);
             if (idx === -1) {
                 return;
             }
-            var el = mark.unbind();
+            const el = mark.unbind();
             if (el) {
                 this.element.removeChild(el);
             }
@@ -127,7 +126,7 @@
         }
         render() {
             setCoords(this.element, coords(this.target, this.container));
-            for (var m of this.marks) {
+            for (let m of this.marks) {
                 m.render();
             }
         }
@@ -143,7 +142,7 @@
             this.container = container;
         }
         unbind() {
-            var el = this.element;
+            const el = this.element;
             this.element = null;
             return el;
         }
@@ -163,8 +162,8 @@
         }
         getClientRects() {
             var _a;
-            var rects = [];
-            var el = (_a = this.element) === null || _a === void 0 ? void 0 : _a.firstChild;
+            const rects = [];
+            let el = (_a = this.element) === null || _a === void 0 ? void 0 : _a.firstChild;
             while (el) {
                 if (el instanceof Element) {
                     rects.push(el.getBoundingClientRect());
@@ -185,31 +184,33 @@
         }
     }
     class Highlight extends Mark {
-        constructor(range, className, data, attributes) {
+        constructor(range, className, data = {}, attributes = {}) {
             super();
             this.range = range;
             this.className = className;
-            this.data = data || {};
-            this.attributes = attributes || {};
+            this.data = data;
+            this.attributes = attributes;
         }
         bind(element, container) {
             super.bind(element, container);
-            for (var attr in this.data) {
-                if (this.data.hasOwnProperty(attr)) {
+            for (let attr in this.data) {
+                if (Object.prototype.hasOwnProperty.call(this.data, attr)) {
                     if (this.element instanceof HTMLElement) {
                         this.element.dataset[attr] = this.data[attr];
                     }
                 }
             }
-            for (var attr in this.attributes) {
-                if (this.attributes.hasOwnProperty(attr)) {
-                    if (this.element instanceof HTMLElement || this.element instanceof SVGElement) {
+            for (let attr in this.attributes) {
+                if (Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
+                    if (this.element instanceof HTMLElement ||
+                        this.element instanceof SVGElement) {
                         this.element.setAttribute(attr, this.attributes[attr]);
                     }
                 }
             }
             if (this.className) {
-                if (this.element instanceof HTMLElement || this.element instanceof SVGElement) {
+                if (this.element instanceof HTMLElement ||
+                    this.element instanceof SVGElement) {
                     this.element.classList.add(this.className);
                 }
             }
@@ -220,13 +221,13 @@
             while (this.element.firstChild) {
                 this.element.removeChild(this.element.firstChild);
             }
-            var docFrag = this.element.ownerDocument.createDocumentFragment();
-            var filtered = this.filteredRanges();
-            var offset = this.element.getBoundingClientRect();
-            var container = this.container.getBoundingClientRect();
-            for (var i = 0, len = filtered.length; i < len; i++) {
-                var r = filtered[i];
-                var el = svg.createElement("rect");
+            const docFrag = this.element.ownerDocument.createDocumentFragment();
+            const filtered = this.filteredRanges();
+            const offset = this.element.getBoundingClientRect();
+            const container = this.container.getBoundingClientRect();
+            for (let i = 0, len = filtered.length; i < len; i++) {
+                const r = filtered[i];
+                const el = svg.createElement("rect");
                 el.setAttribute("x", String(r.left - offset.left + container.left));
                 el.setAttribute("y", String(r.top - offset.top + container.top));
                 el.setAttribute("height", String(r.height));
@@ -237,7 +238,7 @@
         }
     }
     class Underline extends Highlight {
-        constructor(range, className, data, attributes) {
+        constructor(range, className, data = {}, attributes = {}) {
             super(range, className, data, attributes);
         }
         render() {
@@ -246,19 +247,19 @@
             while (this.element.firstChild) {
                 this.element.removeChild(this.element.firstChild);
             }
-            var docFrag = this.element.ownerDocument.createDocumentFragment();
-            var filtered = this.filteredRanges();
-            var offset = this.element.getBoundingClientRect();
-            var container = this.container.getBoundingClientRect();
-            for (var i = 0, len = filtered.length; i < len; i++) {
-                var r = filtered[i];
-                var rect = svg.createElement("rect");
+            const docFrag = this.element.ownerDocument.createDocumentFragment();
+            const filtered = this.filteredRanges();
+            const offset = this.element.getBoundingClientRect();
+            const container = this.container.getBoundingClientRect();
+            for (let i = 0, len = filtered.length; i < len; i++) {
+                const r = filtered[i];
+                const rect = svg.createElement("rect");
                 rect.setAttribute("x", String(r.left - offset.left + container.left));
                 rect.setAttribute("y", String(r.top - offset.top + container.top));
                 rect.setAttribute("height", String(r.height));
                 rect.setAttribute("width", String(r.width));
                 rect.setAttribute("fill", "none");
-                var line = svg.createElement("line");
+                const line = svg.createElement("line");
                 line.setAttribute("x1", String(r.left - offset.left + container.left));
                 line.setAttribute("x2", String(r.left - offset.left + container.left + r.width));
                 line.setAttribute("y1", String(r.top - offset.top + container.top + r.height - 1));
@@ -273,8 +274,8 @@
         }
     }
     function coords(el, container) {
-        var offset = container.getBoundingClientRect();
-        var rect = el.getBoundingClientRect();
+        const offset = container.getBoundingClientRect();
+        const rect = el.getBoundingClientRect();
         return {
             top: rect.top - offset.top,
             left: rect.left - offset.left,
